@@ -12,22 +12,19 @@ function generateToken(params = {}) {
 
 module.exports = {
     async store (req, res){
-        const { email } = req.body;
+        const { email } = req.body;      
+        const user = await User.create(req.body)
+            .then(function(user){
+                user.password = undefined; //nao retornar senha 
 
-        try {            
-            const user = await User.create(req.body);
-
-            user.password = undefined; //nao retornar senha 
-
-            return res.send({ 
-                user, 
-                token: generateToken({ id: user.id})
-            });
-
-        } catch (err) {
-            return res.send({ error: 'Erro ao cadastrar usuário'})
-        }
-        
+                return res.send({ 
+                    user, 
+                    token: generateToken({ id: user.id})
+                });
+                
+            }).catch(function (err) {
+                return res.status(400).send({ error: err });
+        });
     },
 
     async authenticate (req, res){

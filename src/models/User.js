@@ -6,15 +6,36 @@ class User extends Model {
         super.init({
             name: {
                 type: DataTypes.STRING,
-                validate: {}
+                allowNull: false,
+                validate: {
+                    notEmpty: {
+                        msg: 'Este Campo não pode ser vazio'
+                    }
+                }
             },
             email:{
                 type: DataTypes.STRING,
                 validate: {
-                    
+                    notEmpty: {
+                        msg: 'Este campo não pode ser vazio'
+                    },
+                    isEmail: {
+                        msg: 'Preencha com um e-mail válido'
+                    }
                 }
             },
-            password: DataTypes.STRING
+            password: {
+                type: DataTypes.STRING,
+                validate: {
+                    notEmpty: {
+                        msg: 'Este campo não pode ser vazio'
+                    },
+                    len: {
+                        args: [6, 10],
+                        msg: 'Este campo deve ter entre 6 e 10 caracteres'
+                    }
+                }   
+            }
         },{
             hooks: {
                 beforeCreate:(async (user) => {
